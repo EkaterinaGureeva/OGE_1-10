@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+ <meta name="theme-color" content="#5d79ff" />
+ <meta name="apple-mobile-web-app-capable" content="yes" />
+ <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+ <meta name="format-detection" content="telephone=no" />
+ <title>Тренажёр ОГЭ • Информатика • Задание 3 • Логические выражения</title>
+ <style>
+  :root{
+   --bg:#f6fbff; --bg2:#eef6ff;
+   --text:#0f1f3a; --muted:#4a5f87;
+   --blue:#5d79ff; --sky:#4fd6ff; --ice:#d9f2ff;
+   --ok:#16b79a; --bad:#ff5b7e; --warn:#f2b441;
+   --line: rgba(15,31,58,.10);
+   --shadow: 0 18px 52px rgba(15,31,58,.14);
+   --shadow2: 0 10px 28px rgba(15,31,58,.10);
+   --shadow3: 0 8px 18px rgba(15,31,58,.08);
+   --radius: 24px; --tap: 56px; --gap: 14px;
+   --fs-title: clamp(22px, 2.1vw, 34px);
+   --fs-h2: clamp(18px, 1.6vw, 24px);
+   --fs-body: clamp(18px, 1.25vw, 22px);
+   --fs-small: clamp(14px, 1vw, 16px);
+   --fs-mono: clamp(14px, 1.05vw, 16px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html, body{height:100%}
+  body{
+   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+   font-weight: 520;
+   letter-spacing: .1px;
+   color: var(--text);
+   background:
+    radial-gradient(900px 560px at 14% 12%, rgba(93,121,255,.18), transparent 60%),
+    radial-gradient(900px 560px at 88% 16%, rgba(79,214,255,.14), transparent 62%),
+    radial-gradient(900px 680px at 30% 92%, rgba(217,242,255,.65), transparent 60%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+   padding:
+        calc(18px + env(safe-area-inset-top))
+        calc(16px + env(safe-area-inset-right))
+        calc(22px + env(safe-area-inset-bottom))
+        calc(16px + env(safe-area-inset-left));
+   touch-action: manipulation;
+   -webkit-tap-highlight-color: transparent;
+  }
+  .wrap{max-width:1320px;margin:0 auto;min-height:calc(100vh - 40px);
+  min-height:calc(100svh - 40px);
+  min-height:calc(100dvh - 40px);display:flex;flex-direction:column;gap:var(--gap);}
+  header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+  .brand{display:flex;flex-direction:column;gap:6px;padding:6px 2px}
+  .brand h1{font-size:var(--fs-title);line-height:1.12;letter-spacing:.2px;font-weight: 920}
+  .brand .sub{color:var(--muted);font-size:var(--fs-small);line-height:1.35}
+
+  .topActions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+  .chip{background:rgba(255,255,255,.80);backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:var(--shadow2);border-radius:999px;padding:10px 12px;display:flex;gap:10px;align-items:center;min-width:172px;}
+  .chip .k{color:var(--muted);font-size:12px;letter-spacing:.8px}
+  .chip .v{font-weight:950;font-size:18px;line-height:1}
+  .dot{width:12px;height:12px;border-radius:999px;background:var(--sky);box-shadow:0 0 0 5px rgba(79,214,255,.16)}
+  .dot.bad{background:var(--bad);box-shadow:0 0 0 5px rgba(255,91,126,.16)}
+  .dot.warn{background:var(--warn);box-shadow:0 0 0 5px rgba(242,180,65,.16)}
+
+  .btn{
+   border:1px solid var(--line);
+   background:rgba(255,255,255,.86);
+   box-shadow:var(--shadow3);
+   color:var(--text);
+   border-radius:16px;
+   cursor:pointer;
+   height:var(--tap);
+   padding:0 16px;
+   font-weight: 900;
+   letter-spacing:.2px;
+   display:inline-flex;align-items:center;gap:10px;
+   user-select:none;
+   transition:transform .08s ease, box-shadow .16s ease, filter .16s ease;
+   font-size: 16px;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none;filter:saturate(.6);box-shadow:none}
+  .btnPrimary{border-color:rgba(93,121,255,.35);background:linear-gradient(135deg, rgba(93,121,255,.96), rgba(79,214,255,.95));color:#0d1430;box-shadow:0 18px 36px rgba(93,121,255,.20), 0 12px 26px rgba(79,214,255,.14);}
+  .btnDanger{border-color:rgba(255,91,126,.35);background:linear-gradient(135deg, rgba(255,91,126,.92), rgba(242,180,65,.92));color:#2b0b14;box-shadow:0 18px 36px rgba(255,91,126,.18);}
+
+  main{flex:1 1 auto;display:grid;grid-template-columns:1.25fr .75fr;gap:var(--gap);align-items:stretch;}
+  .card{background:rgba(255,255,255,.84);backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius);overflow:hidden;position:relative;transform:translateZ(0);}
+  .card::before{content:"";position:absolute;inset:-2px;background:radial-gradient(900px 420px at 15% 8%, rgba(93,121,255,.14), transparent 55%),radial-gradient(900px 420px at 92% 16%, rgba(79,214,255,.12), transparent 60%);pointer-events:none;opacity:.9;}
+  .card>*{position:relative}
+
+  .cardHd{padding:16px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(180deg, rgba(93,121,255,.10), rgba(255,255,255,.60));}
+  .cardHd h2{font-size:var(--fs-h2);line-height:1.2;font-weight: 920}
+  .pill{font-size:13px;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.78);font-weight:900;letter-spacing:.2px}
+  .cardBd{padding:18px;}
+  .taskText{font-size:var(--fs-body);line-height:1.7;}
+
+  .noteInline{margin-top:10px;color:var(--muted);font-size:var(--fs-small);}
+
+  .codeLine{
+   margin-top:10px;
+   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+   font-size: var(--fs-mono);
+   background:rgba(93,121,255,.10);
+   border:1px solid rgba(93,121,255,.22);
+   padding:10px 12px;border-radius:16px;
+   display:block;overflow-x:auto;
+   letter-spacing: .3px;
+  }
+
+  .controls{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .answerRow{display:flex;gap:10px;width:100%;align-items:center;flex-wrap:wrap;}
+  input[type="text"]{
+   flex:1 1 360px;height:var(--tap);
+   border-radius:16px;padding:0 16px;border:1px solid var(--line);
+   background:rgba(255,255,255,.94);color:var(--text);outline:none;
+   font-size:clamp(18px, 1.35vw, 22px);
+   font-weight: 650;
+   box-shadow:inset 0 0 0 1px rgba(15,31,58,.02), 0 10px 22px rgba(15,31,58,.06);
+   transition:box-shadow .15s ease, border-color .15s ease;
+  }
+  input:focus{border-color:rgba(93,121,255,.55);box-shadow:0 0 0 6px rgba(93,121,255,.16);}
+
+  .feedback{margin-top:14px;display:none;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.78);line-height:1.55;font-size:var(--fs-body);box-shadow:var(--shadow2);}
+  .feedback.ok{display:block;border-color:rgba(22,183,154,.35);background:rgba(79,214,255,.12);}
+  .feedback.bad{display:block;border-color:rgba(255,91,126,.35);background:rgba(255,91,126,.10);}
+  .feedback .small{color:var(--muted);font-size:var(--fs-small);margin-top:6px}
+
+  .flipWrap{perspective:1200px;}
+  .flipInner{position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1);}
+  .flipped .flipInner{transform:rotateY(180deg);}
+  .face{backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+  .back{position:absolute;inset:0;transform:rotateY(180deg);}
+  .hintBox{border:1px dashed rgba(15,31,58,.18);background:rgba(217,242,255,.55);border-radius:18px;padding:14px 14px;box-shadow:0 10px 22px rgba(15,31,58,.08);font-size:var(--fs-body);line-height:1.6;}
+
+  .side{padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px;height:100%;}
+  .mini{display:flex;gap:10px;flex-wrap:wrap;}
+  .tag{font-size:14px;padding:10px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.78);color:var(--muted);font-weight:900;}
+  .tag strong{color:var(--text)}
+  .progress{height:12px;background:rgba(15,31,58,.06);border:1px solid var(--line);border-radius:999px;overflow:hidden;}
+  .bar{height:100%;width:0%;background:linear-gradient(90deg, rgba(79,214,255,.95), rgba(93,121,255,.95), rgba(217,242,255,.95));transition:width .25s ease;}
+  .note{padding:14px 14px;border-radius:18px;border:1px dashed rgba(15,31,58,.18);background:rgba(255,255,255,.72);color:var(--muted);line-height:1.55;font-size:var(--fs-small);}
+  .note b{color:var(--text)}
+  .history{display:flex;flex-direction:column;gap:10px;overflow:auto;max-height:420px;padding-right:4px;overscroll-behavior:contain;}
+  .item{border:1px solid var(--line);background:rgba(255,255,255,.78);border-radius:18px;padding:12px 12px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start;box-shadow:0 6px 16px rgba(15,31,58,.08);}
+  .item.ok{border-color:rgba(22,183,154,.28);background:rgba(79,214,255,.10);}
+  .item.bad{border-color:rgba(255,91,126,.28);background:rgba(255,91,126,.09);}
+  .item .t{font-weight:950;font-size:16px}
+  .item .s{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.35}
+  .badge{font-weight:950;font-size:14px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.80);min-width:52px;text-align:center;}
+  footer{color:var(--muted);font-size:var(--fs-small);text-align:center;padding:2px 0 6px;}
+
+  .modalBack{position:fixed;inset:0;background:rgba(15,31,58,.32);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50;}
+  .modal{max-width:980px;width:100%;border-radius:26px;border:1px solid rgba(255,255,255,.55);background:radial-gradient(900px 520px at 20% 20%, rgba(93,121,255,.20), transparent 60%),radial-gradient(900px 520px at 90% 25%, rgba(79,214,255,.16), transparent 62%),linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.88));box-shadow:0 26px 80px rgba(15,31,58,.22);overflow:hidden;}
+  .modalHd{padding:18px 18px 12px;border-bottom:1px solid rgba(15,31,58,.10);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .modalHd h3{font-size:clamp(18px, 1.6vw, 24px);line-height:1.25;font-weight: 920}
+  .modalBd{padding:18px;line-height:1.65;font-size:var(--fs-body);}
+  .steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 8px;}
+  .step{border:1px solid rgba(15,31,58,.10);background:rgba(255,255,255,.84);border-radius:18px;padding:12px 12px;box-shadow:0 10px 22px rgba(15,31,58,.08);}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:999px;background:rgba(93,121,255,.16);border:1px solid rgba(93,121,255,.25);font-weight:950;margin-right:8px;}
+  .modalFt{padding:14px 18px 18px;border-top:1px solid rgba(15,31,58,.10);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+
+  @media (max-width:980px){main{grid-template-columns:1fr;}.topActions{justify-content:flex-start}.steps{grid-template-columns:1fr;}input[type="text"]{flex-basis:100%;}}
+ </style>
+</head>
+<body>
+ <div class="modalBack" id="welcome">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+   <div class="modalHd">
+    <h3 id="welcomeTitle">Тренажёр ОГЭ (информатика), задание 3 — «Логические выражения»</h3>
+    <span class="pill">30 заданий</span>
+   </div>
+   <div class="modalBd">
+    <p><b>Как работать:</b> решайте задания по очереди и вводите ответ. Нажмите <b>«Проверить»</b>, чтобы увидеть результат.</p>
+    <div class="steps">
+     <div class="step"><span class="n">1</span><b>Читайте условие</b><br><span class="muted">Определите, что требуется: максимум, минимум, количество или выбор варианта.</span></div>
+     <div class="step"><span class="n">2</span><b>Порядок действий</b><br><span class="muted">Скобки → НЕ → И → ИЛИ.</span></div>
+     <div class="step"><span class="n">3</span><b>Формат ответа</b><br><span class="muted">Если два значения — введите через пробел, как в ответах.</span></div>
+     <div class="step"><span class="n">4</span><b>Подсказка</b><br><span class="muted">Кнопка «Подсказка» помогает выбрать верный ход решения.</span></div>
+    </div>
+    <div class="note"><b>Важно:</b> ответы проверяются точно (регистр не важен). Лишние пробелы убираются автоматически.</div>
+   </div>
+   <div class="modalFt">
+    <button class="btn" id="skipIntro">Понятно</button>
+    <button class="btn btnPrimary" id="startBtn">Начать →</button>
+   </div>
+  </div>
+ </div>
+
+ <div class="wrap" aria-live="polite">
+  <header>
+   <div class="brand">
+    <h1>Тренажёр: логические выражения</h1>
+    <div class="sub">ОГЭ по информатике • Задание 3 • Для интерактивной доски удобно включить полный экран</div>
+   </div>
+
+   <div class="topActions">
+    <div class="chip" title="Текущее задание">
+     <div class="dot" id="statusDot"></div>
+     <div>
+      <div class="k">ЗАДАНИЕ</div>
+      <div class="v"><span id="idx">1</span>/30</div>
+     </div>
+    </div>
+    <div class="chip" title="Набранные баллы">
+     <div class="dot warn"></div>
+     <div>
+      <div class="k">БАЛЛЫ</div>
+      <div class="v" id="score">0</div>
+     </div>
+    </div>
+    <button class="btn" id="fsBtn" title="Полноэкранный режим">⛶ Полный экран</button>
+    <button class="btn" id="helpBtn" title="Показать инструкцию">❓ Инструкция</button>
+   </div>
+  </header>
+
+  <main>
+   <section class="card flipWrap" aria-label="Задание" id="flipRoot">
+    <div class="flipInner">
+     <div class="face">
+      <div class="cardHd">
+       <h2 id="title">Задание 1</h2>
+       <span class="pill">ввод</span>
+      </div>
+      <div class="cardBd">
+       <div class="taskText" id="taskText"></div>
+       <div class="controls">
+        <div class="answerRow">
+         <input id="answer" type="text" inputmode="text" autocomplete="off" placeholder="Введите ответ…" />
+         <button class="btn btnPrimary" id="checkBtn">✅ Проверить</button>
+        </div>
+        <div class="answerRow">
+         <button class="btn" id="hintBtn">💡 Подсказка</button>
+         <button class="btn" id="prevBtn">← Назад</button>
+         <button class="btn" id="nextBtn">Дальше →</button>
+         <button class="btn btnDanger" id="resetBtn" title="Сбросить прогресс">↺ Сброс</button>
+        </div>
+       </div>
+       <div class="feedback" id="feedback"></div>
+      </div>
+     </div>
+
+     <div class="face back">
+      <div class="cardHd">
+       <h2>Подсказка</h2>
+       <span class="pill">вернуться</span>
+      </div>
+      <div class="cardBd">
+       <div class="hintBox" id="hintText"></div>
+       <div class="controls">
+        <div class="answerRow">
+         <button class="btn btnPrimary" id="backBtn">← К заданию</button>
+        </div>
+       </div>
+       <div class="note" style="margin-top:10px">
+        <b>Совет:</b> при переборе значений фиксируйте, когда выражение становится истинным/ложным, и выбирайте нужный максимум/минимум (или количество).
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <aside class="card" aria-label="Прогресс">
+    <div class="cardHd">
+     <h2>Прогресс</h2>
+     <span class="pill" id="progressLabel">0%</span>
+    </div>
+    <div class="side">
+     <div>
+      <div class="mini" style="margin-bottom:10px">
+       <div class="tag">Решено: <strong id="solvedCount">0</strong></div>
+       <div class="tag">Верно: <strong id="okCount">0</strong></div>
+       <div class="tag">Ошибок: <strong id="badCount">0</strong></div>
+       <div class="tag">Подсказок: <strong id="hintCount">0</strong></div>
+      </div>
+      <div class="progress" aria-label="Лента прогресса">
+       <div class="bar" id="bar"></div>
+      </div>
+     </div>
+
+     <div class="note">
+      <b>Проверка:</b> ответ должен совпасть полностью. Если требуется два значения, вводите их через пробел.
+     </div>
+
+     <div>
+      <span class="pill" style="display:inline-block;margin-bottom:10px">История попыток</span>
+      <div class="history" id="history"></div>
+     </div>
+    </div>
+   </aside>
+  </main>
+
+  <footer>Открывайте файл в браузере. Для доски используйте «Полный экран». (На iPhone/iPad полноэкранный режим может быть недоступен.)</footer>
+ </div>
+
+<script>
+(function() {
+ const tasks = [{"title": "Задание 1", "textHtml": "В каком порядке будут выполняться действия при вычислении логических выражений:<div class='codeLine'>A ИЛИ НЕ B И НЕ C (A И НЕ B) ИЛИ C И НЕ (B ИЛИ НЕ С)</div>", "answer": "4132 2176543", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 2", "textHtml": "Найдите наибольшее целое число х, для которого истинно высказывание:<div class='codeLine'>( x&lt;15 ) И НЕ( x четное )</div>", "answer": "13", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 3", "textHtml": "Найдите наибольшее двузначное число, для которого истинно высказывание:<div class='codeLine'>НЕ (число делится на 3) И (первая цифра чётная)</div>", "answer": "89", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 4", "textHtml": "Для какого целого числа x ложно высказывание:<div class='codeLine'>x &gt; 3 ИЛИ НЕ ( x &gt; 2 )</div>", "answer": "3", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 5", "textHtml": "Найдите наименьшее целое число х, для которого ложно высказывание:<div class='codeLine'>НЕ( x &gt; 8 ) И ( x≤10 )</div>", "answer": "9", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 6", "textHtml": "Найдите наименьшее натуральное число х, для которого истинно высказывание:<div class='codeLine'>НЕ( ( x&gt;3 ) И ( x&lt; 8 ) ) И ( x кратно 5 )</div>", "answer": "10", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 7", "textHtml": "Найдите два наименьших значения натурального числа x, для которых ложно высказывание:<div class='codeLine'>НЕ( x≥7 ) И x&gt;1  ИЛИ ( x простое )</div>", "answer": "1 8", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 8", "textHtml": "Найдите количество целых чисел, для которых истинно высказывание:<div class='codeLine'>x&lt;5 ИЛИ x²=100</div>", "answer": "11", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 9", "textHtml": "Для какого из имён - Инна, Нелли, Иван, Потап - ложно высказывание:<div class='codeLine'>НЕ( первая буква гласная ) ИЛИ НЕ( последняя буква согласная ) </div>", "answer": "Иван", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 10", "textHtml": "Обозначим цвета буквами: К - красный, Ж - жёлтый, С - синий, З - зелёный Для какой из последовательностей цветных бусин – СЗККЖК, ЖЖКСЗК, СЖСЗКЗ, КЖЗСКС – истинно высказывание:<div class='codeLine'>( 2-я бусина жёлтая ) И НЕ( 4-я бусина зелёная ) И НЕ( 6-я бусина красная )</div>", "answer": "КЖЗСКС", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 11", "textHtml": "Для какого из чисел – 6843, 4562, 3561, 1245 - истинно высказывание:<div class='codeLine'>( НЕ( последняя цифра нечётная ) ИЛИ ( число &lt; 3560 ) ) И НЕ( первая цифра чётная )</div>", "answer": "1234", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 12", "textHtml": "Найдите наименьшее целое число x, для которого истинно высказывание:<div class='codeLine'>НЕ ( x≤ 7 ) И ( x &lt; 20 )</div>", "answer": "8", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 13", "textHtml": "Найдите наименьшее целое число x, для которого истинно высказывание:<div class='codeLine'>(x &gt; 30 ) ИЛИ НЕ ( x&lt;10 )</div>", "answer": "10", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 14", "textHtml": "Найдите наименьшее положительное трехзначное число х, для которого истинно высказывание:<div class='codeLine'>( первая цифра равна последней ) И ( x кратно 5 )</div>", "answer": "505", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 15", "textHtml": "Для какого целого числа x ложно высказывание:<div class='codeLine'>( x&gt;7 ) ИЛИ НЕ( x &gt;6 )</div>", "answer": "7", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 16", "textHtml": "Найдите наименьшее натуральное число х, для которого ложно высказывание:<div class='codeLine'>НЕ( x&lt;50 ) И ( x&lt;30 )</div>", "answer": "1", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 17", "textHtml": "Для какого наибольшего целого числа x истинно высказывание:<div class='codeLine'>(x≤0) И ( ( x&lt;-5 ) ИЛИ ( x четно ) )</div>", "answer": "0", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 18", "textHtml": "Найдите два наименьших положительных трёхзначных числа, для которых истинно высказывание:<div class='codeLine'>НЕ( x &lt;= 103 ) ИЛИ ( x чётное ) И ( x кратно 3 )</div>", "answer": "102 104", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 19", "textHtml": "Найдите три наименьших целых числа, для которых ложно высказывание:<div class='codeLine'>( x&lt;7 ) ИЛИ ( x четное) И НЕ( x двузначное )</div>", "answer": "7 9 10", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 20", "textHtml": "Для какого из имен – Аида, Сергей, Степан, Артем - истинно высказывание:<div class='codeLine'>( 1-я буква гласная ) И ( ( последняя буква согласная ) ИЛИ ( 2-я буква согласная ) )</div>", "answer": "Артем", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 21", "textHtml": "Для какого из имён - Емеля, Иван, Михаил, Никита - истинно высказывание:<div class='codeLine'>НЕ( ( первая буква гласная ) ИЛИ НЕ( последняя буква согласная ) )</div>", "answer": "Михаил", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 22", "textHtml": "Обозначим цвета буквами: К - красный, Ж - жёлтый, С - синий, З - зелёный Для какой из последовательностей цветных бусин - ЗКСЗЖ, СЗКЖЖ, ЗСЗКС, КСЖЗЖ - ложно высказывание:<div class='codeLine'>( 1-я бусина зелёная ) ИЛИ НЕ( 3-я бусина красная ) И ( последняя бусина жёлтая )</div>", "answer": "СЗКЖЖ", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 23", "textHtml": "Найдите наибольшее целое число x, для которого истинно высказывание:<div class='codeLine'>НЕ (x≤ 13) И НЕ (x≥ 19)</div>", "answer": "18", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 24", "textHtml": "Найдите наибольшее целое число х, для которого истинно высказывание:<div class='codeLine'>( x&lt;8 ) И НЕ( x кратно 3 ) И ( x четное )</div>", "answer": "4", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 25", "textHtml": "Найдите наименьшее двузначное число, для которого ложно высказывание:<div class='codeLine'>НЕ( первая цифра чётная ) И ( число четное )</div>", "answer": "1з1", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 26", "textHtml": "Для какого из имён – Анна, Максим, Татьяна, Егор - ложно высказывание:<div class='codeLine'>НЕ( первая буква гласная ) ИЛИ ( последняя буква гласная )</div>", "answer": "Егор", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 27", "textHtml": "Найдите наименьшее целое число x, для которого истинно высказывание:<div class='codeLine'>( x&gt;7 ) ИЛИ НЕ ( x&lt;5 )</div>", "answer": "5", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 28", "textHtml": "Найдите наибольшее целое число x, для которого истинно высказывание:<div class='codeLine'>x&gt;5 И НЕ x положительно</div>", "answer": "-6", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 29", "textHtml": "Найдите наибольшее целое число x, для которого ложно высказывание:<div class='codeLine'>( x нечетное ) ИЛИ ( x≥ 20 )</div>", "answer": "18", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}, {"title": "Задание 30", "textHtml": "Найдите наименьшее натуральное число х, для которого ложно высказывание:<div class='codeLine'>( x&lt;50 ) И НЕ( x&gt;30 )</div>", "answer": "31", "hintHtml": "Соблюдайте порядок действий: скобки → НЕ → И → ИЛИ. В заданиях на максимум/минимум удобно проверять значения по очереди."}];
+
+ const state = {
+  idx: 0,
+  score: 0,
+  ok: 0,
+  bad: 0,
+  hints: 0,
+  solved: Array(tasks.length).fill(false),
+  usedHint: Array(tasks.length).fill(false),
+  lastResultOk: null,
+ };
+
+ // ---- Persistence (GitHub Pages / mobile friendly): save progress in this browser ----
+ const STORAGE_KEY = "oge_task3_trainer_v1";
+
+ function safeJsonParse(s){
+  try{ return JSON.parse(s); }catch(e){ return null; }
+ }
+ function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  const data = safeJsonParse(raw);
+  if(!data) return;
+
+  if(Array.isArray(data.solved) && data.solved.length === tasks.length) state.solved = data.solved;
+  if(Array.isArray(data.usedHint) && data.usedHint.length === tasks.length) state.usedHint = data.usedHint;
+
+  if(Number.isFinite(data.idx)) state.idx = Math.min(Math.max(0, data.idx), tasks.length-1);
+  if(Number.isFinite(data.score)) state.score = data.score;
+  if(Number.isFinite(data.ok)) state.ok = data.ok;
+  if(Number.isFinite(data.bad)) state.bad = data.bad;
+  if(Number.isFinite(data.hints)) state.hints = data.hints;
+  if(typeof data.lastResultOk === "boolean" || data.lastResultOk === null) state.lastResultOk = data.lastResultOk;
+
+  if(typeof data.historyHtml === "string"){
+   history.innerHTML = data.historyHtml;
+  }
+ }
+ function saveState(){
+  const payload = {
+   idx: state.idx,
+   score: state.score,
+   ok: state.ok,
+   bad: state.bad,
+   hints: state.hints,
+   solved: state.solved,
+   usedHint: state.usedHint,
+   lastResultOk: state.lastResultOk,
+   historyHtml: history.innerHTML
+  };
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); }catch(e){}
+ }
+ // -------------------------------------------------------------------------------
+
+
+
+ const el = (id)=>document.getElementById(id);
+ const welcome = el("welcome");
+ const startBtn = el("startBtn");
+ const skipIntro = el("skipIntro");
+
+ const fsBtn = el("fsBtn");
+ const helpBtn = el("helpBtn");
+
+ const flipRoot = el("flipRoot");
+ const hintText = el("hintText");
+ const backBtn = el("backBtn");
+
+ const taskText = el("taskText");
+ const title = el("title");
+ const answer = el("answer");
+ const feedback = el("feedback");
+
+ const checkBtn = el("checkBtn");
+ const hintBtn = el("hintBtn");
+ const nextBtn = el("nextBtn");
+ const prevBtn = el("prevBtn");
+ const resetBtn = el("resetBtn");
+
+ const idxEl = el("idx");
+ const scoreEl = el("score");
+ const okCount = el("okCount");
+ const badCount = el("badCount");
+ const hintCount = el("hintCount");
+ const solvedCount = el("solvedCount");
+ const bar = el("bar");
+ const progressLabel = el("progressLabel");
+ const history = el("history");
+ const statusDot = el("statusDot");
+
+ function closeWelcome(focus) {
+  welcome.style.display = "none";
+  if (focus) setTimeout(()=>answer.focus(), 60);
+ }
+ startBtn.addEventListener("click", ()=>closeWelcome(true));
+ skipIntro.addEventListener("click", ()=>closeWelcome(true));
+ helpBtn.addEventListener("click", ()=>{ welcome.style.display = "flex"; });
+ welcome.addEventListener("click", (e)=>{ if (e.target === welcome) closeWelcome(false); });
+
+ fsBtn.addEventListener("click", async ()=>{
+  try {
+   if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+   else await document.exitFullscreen();
+  } catch(e){}
+ });
+
+ function norm(s) {
+  return (s ?? "")
+   .toString()
+   .trim()
+   .replace(/\s+/g, " ")
+   .toLowerCase();
+ }
+
+ function setFeedback(kind, html) {
+  feedback.className = "feedback " + (kind === "ok" ? "ok" : "bad");
+  feedback.innerHTML = html;
+ }
+ function clearFeedback() {
+  feedback.style.display = "none";
+  feedback.className = "feedback";
+  feedback.innerHTML = "";
+ }
+
+ function flipToBack() { flipRoot.classList.add("flipped"); }
+ function flipToFront() { flipRoot.classList.remove("flipped"); }
+ function isFlipped() { return flipRoot.classList.contains("flipped"); }
+
+ function updateStats() {
+  idxEl.textContent = String(state.idx + 1);
+  scoreEl.textContent = String(state.score);
+  okCount.textContent = String(state.ok);
+  badCount.textContent = String(state.bad);
+  hintCount.textContent = String(state.hints);
+  solvedCount.textContent = String(state.solved.filter(Boolean).length);
+
+  const solvedN = state.solved.filter(Boolean).length;
+  const pct = Math.round((solvedN / tasks.length) * 100);
+  bar.style.width = pct + "%";
+  progressLabel.textContent = pct + "%";
+
+  if (state.lastResultOk === null) statusDot.className = "dot";
+  else if (state.lastResultOk) statusDot.className = "dot";
+  else statusDot.className = "dot bad";
+
+  prevBtn.disabled = state.idx === 0;
+  nextBtn.disabled = state.idx === tasks.length - 1;
+ }
+
+ function addHistory(entry) {
+  const div = document.createElement("div");
+  div.className = "item " + (entry.ok ? "ok" : "bad");
+  div.innerHTML = `
+   <div>
+    <div class="t">#${entry.n} • ${entry.ok ? "Верно ✅" : "Неверно ❌"}</div>
+    <div class="s">${entry.msg}</div>
+   </div>
+   <div class="badge">${entry.ok ? "+1" : "×"}</div>
+  `;
+  history.prepend(div);
+  saveState();
+ }
+
+ function render() {
+  const t = tasks[state.idx];
+  title.textContent = t.title || ("Задание " + (state.idx + 1));
+  taskText.innerHTML = t.textHtml || "";
+  hintText.innerHTML = t.hintHtml ? ("<b>Подсказка:</b> " + t.hintHtml) : "Подсказка не задана.";
+
+  answer.value = "";
+  clearFeedback();
+  flipToFront();
+
+  if (state.solved[state.idx]) {
+   setFeedback("ok", `✅ Это задание уже решено. Правильный ответ: <b>${t.answer}</b>.<div class="small">Можно перейти дальше или решать для тренировки — баллы не изменятся.</div>`);
+  }
+
+  updateStats();
+  setTimeout(()=>answer.focus(), 40);
+ }
+
+ function check() {
+  const t = tasks[state.idx];
+  const user = norm(answer.value);
+  if (!user) {
+   setFeedback("bad", "Введите ответ 👇");
+   state.lastResultOk = false;
+   updateStats();
+   return;
+  }
+
+  const correct = norm(t.answer);
+  const isOk = user === correct;
+
+  if (isOk) {
+   state.lastResultOk = true;
+   if (!state.solved[state.idx]) {
+    state.solved[state.idx] = true;
+    state.score += 1;
+   }
+   state.ok += 1;
+   setFeedback("ok", `✅ <b>Верно!</b> Ответ: <b>${t.answer}</b>.<div class="small">Можно переходить к следующему заданию.</div>`);
+   addHistory({n: state.idx + 1, ok:true, msg: `Ответ: “${answer.value.trim()}”`});
+   flipToFront();
+  } else {
+   state.lastResultOk = false;
+   state.bad += 1;
+   const h = state.usedHint[state.idx] ? "" : `<div class="small">Если сложно — нажмите «Подсказка».</div>`;
+   setFeedback("bad", `❌ <b>Пока неверно.</b> Попробуйте ещё раз.${h}`);
+   addHistory({n: state.idx + 1, ok:false, msg: `Ответ: “${answer.value.trim()}”`});
+  }
+  updateStats();
+  saveState();
+ }
+
+ function hint() {
+  const t = tasks[state.idx];
+  if (!state.usedHint[state.idx]) {
+   state.usedHint[state.idx] = true;
+   state.hints += 1;
+  }
+  hintText.innerHTML = t.hintHtml ? ("<b>Подсказка:</b> " + t.hintHtml) : "Подсказка не задана.";
+  flipToBack();
+  updateStats();
+  saveState();
+ }
+
+ function next() {
+  if (state.idx < tasks.length - 1) {
+   state.idx += 1;
+   state.lastResultOk = null;
+   render();
+   saveState();
+  }
+ }
+ function prev() {
+  if (state.idx > 0) {
+   state.idx -= 1;
+   state.lastResultOk = null;
+   render();
+   saveState();
+  }
+ }
+
+ function resetAll() {
+  if (!confirm("Сбросить прогресс и начать сначала?")) return;
+  state.idx = 0;
+  state.score = 0;
+  state.ok = 0;
+  state.bad = 0;
+  state.hints = 0;
+  state.solved = Array(tasks.length).fill(false);
+  state.usedHint = Array(tasks.length).fill(false);
+  state.lastResultOk = null;
+  history.innerHTML = "";
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  welcome.style.display = "flex";
+  render();
+ }
+
+ checkBtn.addEventListener("click", check);
+ hintBtn.addEventListener("click", hint);
+ nextBtn.addEventListener("click", next);
+ prevBtn.addEventListener("click", prev);
+ resetBtn.addEventListener("click", resetAll);
+ backBtn.addEventListener("click", ()=>{ flipToFront(); setTimeout(()=>answer.focus(), 60); });
+
+ answer.addEventListener("keydown", (e)=>{
+  if (e.key === "Enter") check();
+  if (e.key === "Escape" && isFlipped()) flipToFront();
+  if (e.key === "ArrowRight" && (e.ctrlKey || e.metaKey)) next();
+  if (e.key === "ArrowLeft" && (e.ctrlKey || e.metaKey)) prev();
+ });
+
+ // Restore progress (if any)
+ loadState();
+
+ // Persist on visibility changes (mobile)
+ document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') saveState(); });
+ window.addEventListener('beforeunload', saveState);
+
+ render();
+})();
+</script>
+</body>
+</html>
